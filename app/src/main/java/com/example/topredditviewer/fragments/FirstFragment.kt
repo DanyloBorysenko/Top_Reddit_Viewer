@@ -6,13 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import com.example.topredditviewer.R
 import com.example.topredditviewer.databinding.FragmentFirstBinding
-import com.example.topredditviewer.view_models.TopThumbnailsViewModel
+import com.example.topredditviewer.view_models.PublicationsViewModel
 
 class FirstFragment : Fragment() {
-    private val viewModel : TopThumbnailsViewModel by viewModels()
+    private val viewModel : PublicationsViewModel by viewModels()
 
     private var _binding: FragmentFirstBinding? = null
 
@@ -28,8 +26,8 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.text.observe(viewLifecycleOwner) {
-            binding.textview.text = viewModel.text.value
+        viewModel.publications.observe(viewLifecycleOwner) {
+            binding.textview.text = viewModel.publications.value?.size.toString()
         }
     }
 
