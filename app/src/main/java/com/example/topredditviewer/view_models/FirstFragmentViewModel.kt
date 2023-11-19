@@ -10,7 +10,7 @@ import com.example.topredditviewer.network.RedditApi
 import kotlinx.coroutines.launch
 
 private const val TAG = "PublicationsViewModel"
-class PublicationsViewModel : ViewModel() {
+class FirstFragmentViewModel : ViewModel() {
     private val _publications = MutableLiveData<List<Publication>>()
     val publications : LiveData<List<Publication>>
         get() = _publications
