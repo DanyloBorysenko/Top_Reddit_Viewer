@@ -1,6 +1,5 @@
 package com.example.topredditviewer.view_models
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,6 @@ import com.example.topredditviewer.model.Publication
 import com.example.topredditviewer.network.RedditApi
 import kotlinx.coroutines.launch
 
-private const val TAG = "PublicationsViewModel"
 class FirstFragmentViewModel : ViewModel() {
     private val _publications = MutableLiveData<List<Publication>>()
     val publications : LiveData<List<Publication>>
@@ -28,7 +26,7 @@ class FirstFragmentViewModel : ViewModel() {
                     topPublications.add(it.data)
                 }
             } catch (e : Exception) {
-                Log.d(TAG, "Can not load top Publications")
+                e.printStackTrace()
             }
             _publications.value = topPublications
         }
