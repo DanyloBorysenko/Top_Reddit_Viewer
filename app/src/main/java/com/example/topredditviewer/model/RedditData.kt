@@ -10,9 +10,11 @@ data class Publication(
     @Json(name = "is_gallery") val isGallery : Boolean?,
     @Json(name = "media_metadata") val mediaMetaData: Map<String, MediaItem>?,
     @Json(name = "gallery_data") val galleryData : GalleryData?,
-    val url : String,
-    val thumbnail : String,
-    val preview : Preview?)
+    @Json(name = "num_comments") val numComments : Int?,
+    val author : String?,
+    val thumbnail : String?,
+    val preview : Preview?,
+    val created : Long?)
 data class GalleryData(val items : List<GalleryItem>)
 data class GalleryItem(@Json(name = "media_id") val mediaId : String)
 data class MediaItem(val id : String, val s : MediaImage)
