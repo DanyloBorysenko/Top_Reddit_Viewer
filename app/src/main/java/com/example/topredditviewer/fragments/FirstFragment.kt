@@ -1,10 +1,12 @@
 package com.example.topredditviewer.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -17,11 +19,11 @@ import com.example.topredditviewer.view_models.FirstFragmentViewModel
 import com.example.topredditviewer.view_models.SharedViewModel
 
 class FirstFragment : Fragment() {
-    private val sharedViewModel : SharedViewModel by activityViewModels()
-    private val viewModel : FirstFragmentViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+    private val viewModel: FirstFragmentViewModel by viewModels()
     private val adapter: PublicationAdapter by lazy {
-        PublicationAdapter {
-                publication -> navigateToSecondFragmentAndSetPublication(publication)
+        PublicationAdapter { publication ->
+            navigateToSecondFragmentAndSetPublication(publication)
         }
     }
 
@@ -40,11 +42,22 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.status.observe(viewLifecycleOwner) {status ->
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (viewModel.before.value != null) {
+                        viewModel.getPublications(showPreviousPage = true)
+                    }
+                }
+            }
+        )
+        viewModel.status.observe(viewLifecycleOwner) { status ->
             setLoadingImage(status)
         }
         binding.publicationsRecyclerView.adapter = adapter
-        viewModel.publications.observe(viewLifecycleOwner) {publications->
+        binding.publicationsRecyclerView.setHasFixedSize(true)
+        viewModel.publications.observe(viewLifecycleOwner) { publications ->
             adapter.updateData(newData = publications)
         }
         viewModel.before.observe(viewLifecycleOwner) {
@@ -65,7 +78,8 @@ class FirstFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    private fun navigateToSecondFragmentAndSetPublication(publication : Publication) {
+
+    private fun navigateToSecondFragmentAndSetPublication(publication: Publication) {
         sharedViewModel.apply {
             saveSelectedPublication(publication)
             setImageUrl()
@@ -73,23 +87,27 @@ class FirstFragment : Fragment() {
         findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
     }
 
-    private fun View.setVisibility(parameter : String?) {
+    private fun View.setVisibility(parameter: String?) {
         if (parameter == null) {
             this.visibility = View.GONE
         } else {
             this.visibility = View.VISIBLE
         }
     }
+
     private fun setLoadingImage(status: AppStatus) {
-        when(status) {
+        when (status) {
             AppStatus.LOADING -> {
                 binding.loadingImageView.visibility = View.VISIBLE
                 binding.loadingImageView.bringToFront()
-                binding.loadingImageView.setImageResource(R.drawable.loading_animation)}
+                binding.loadingImageView.setImageResource(R.drawable.loading_animation)
+            }
+
             AppStatus.ERROR -> {
                 binding.loadingImageView.visibility = View.VISIBLE
                 binding.loadingImageView.setImageResource(R.drawable.broken_image_ic)
             }
+
             else -> binding.loadingImageView.visibility = View.GONE
         }
     }

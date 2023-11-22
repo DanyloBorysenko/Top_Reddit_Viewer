@@ -8,11 +8,13 @@ import com.example.topredditviewer.model.Publication
 class SharedViewModel : ViewModel() {
     private val _selectedPublication = MutableLiveData<Publication>()
     private val _url = MutableLiveData<String>()
-    val url : LiveData<String>
+    val url: LiveData<String>
         get() = _url
+
     fun saveSelectedPublication(publication: Publication) {
         _selectedPublication.value = publication
     }
+
     fun setImageUrl() {
         val imageUrl = if (_selectedPublication.value?.isGallery == true) {
             val galleryItemId: String =

@@ -21,7 +21,7 @@ import java.io.OutputStream
 import java.net.URL
 
 class SecondFragment : Fragment() {
-    private val sharedViewModel : SharedViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
 
@@ -36,7 +36,7 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.url.observe(viewLifecycleOwner) {url ->
+        sharedViewModel.url.observe(viewLifecycleOwner) { url ->
             binding.publicationDetailsImageView.load(url) {
                 placeholder(R.drawable.loading_animation)
                 error(R.drawable.broken_image_ic)
@@ -46,6 +46,7 @@ class SecondFragment : Fragment() {
             downloadImage()
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -73,7 +74,8 @@ class SecondFragment : Fragment() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Failed to download image", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Failed to download image", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 } finally {
                     outputStream?.close()

@@ -23,15 +23,16 @@ private val retrofit = Retrofit.Builder()
 interface RedditApiService {
     @GET("top.json")
     suspend fun loadTopPublication(
-        @Query(value = "limit") limit : Int = LIMIT,
-        @Query(value = "raw_json") rawJson : Int = RAW_JSON,
-        @Query(value = "after") after : String? = null,
-        @Query(value = "before") before : String? = null,
-        @Query(value = "count") count : Int? = null
-    ) : RedditData
+        @Query(value = "limit") limit: Int = LIMIT,
+        @Query(value = "raw_json") rawJson: Int = RAW_JSON,
+        @Query(value = "after") after: String? = null,
+        @Query(value = "before") before: String? = null,
+        @Query(value = "count") count: Int? = null
+    ): RedditData
 }
+
 object RedditApi {
-    val retrofitService :  RedditApiService by lazy {
+    val retrofitService: RedditApiService by lazy {
         retrofit.create(RedditApiService::class.java)
     }
 }
