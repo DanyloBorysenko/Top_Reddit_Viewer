@@ -18,6 +18,11 @@ import com.example.topredditviewer.view_models.SharedViewModel
 class FirstFragment : Fragment() {
     private val sharedViewModel : SharedViewModel by activityViewModels()
     private val viewModel : FirstFragmentViewModel by viewModels()
+    private val adapter: PublicationAdapter by lazy {
+        PublicationAdapter {
+                publication -> navigateToSecondFragmentAndSetPublication(publication)
+        }
+    }
 
     private var _binding: FragmentFirstBinding? = null
 
@@ -34,10 +39,9 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.publications.observe(viewLifecycleOwner) { newPublicationsList->
-            binding.publicationsRecyclerView.adapter = PublicationAdapter(newPublicationsList) {publication ->
-                navigateToSecondFragment(publication)
-            }
+        binding.publicationsRecyclerView.adapter = adapter
+        viewModel.publications.observe(viewLifecycleOwner) {publications->
+            adapter.updateData(newData = publications)
         }
         viewModel.before.observe(viewLifecycleOwner) {
             binding.previousPublicationTextView.setVisibility(it)
@@ -57,7 +61,7 @@ class FirstFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    private fun navigateToSecondFragment(publication : Publication) {
+    private fun navigateToSecondFragmentAndSetPublication(publication : Publication) {
         sharedViewModel.apply {
             saveSelectedPublication(publication)
             setImageUrl()

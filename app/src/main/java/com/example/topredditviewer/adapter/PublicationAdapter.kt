@@ -12,12 +12,37 @@ import java.util.concurrent.TimeUnit
 
 private const val THUMBNAIL_VALUE = "default"
 
-class PublicationAdapter(private val publications : List<Publication>, private val onClick : (publication: Publication) -> Unit) : RecyclerView.Adapter<PublicationAdapter.CustomViewHolder>() {
+class PublicationAdapter(
+    private val onClick : (publication: Publication) -> Unit
+) : RecyclerView.Adapter<PublicationAdapter.CustomViewHolder>() {
+    private var data : List<Publication> = emptyList()
 
+    fun updateData(newData : List<Publication>) {
+        data = newData
+        notifyDataSetChanged()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
+        return CustomViewHolder(
+            PublicationCardBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false)
+        )
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+
+    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
+        val item = data[position]
+        holder.bind(item)
+    }
     inner class CustomViewHolder(private val binding: PublicationCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(publication: Publication) {
             binding.publicationTitleTextView.text = publication.title
             binding.publicationImageView.load(getImageUrl(publication)) {
+                placeholder(R.drawable.loading_animation)
+                error(R.drawable.broken_image_ic)
             }
             binding.publicationAuthorTextView.text = publication.author
             binding.publicationCommentsCountTextView.text = itemView.context.getString(R.string.comments_text, publication.numComments)
@@ -56,21 +81,5 @@ class PublicationAdapter(private val publications : List<Publication>, private v
             }
             return imageUrl.orEmpty()
         }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        return CustomViewHolder(
-            PublicationCardBinding.inflate(
-                LayoutInflater.from(parent.context), parent, false)
-        )
-    }
-
-    override fun getItemCount(): Int {
-        return publications.size
-    }
-
-    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-        val item = publications[position]
-        holder.bind(item)
     }
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import coil.load
+import com.example.topredditviewer.R
 import com.example.topredditviewer.databinding.FragmentSecondBinding
 import com.example.topredditviewer.view_models.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +37,10 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedViewModel.url.observe(viewLifecycleOwner) {url ->
-            binding.publicationDetailsImageView.load(url)
+            binding.publicationDetailsImageView.load(url) {
+                placeholder(R.drawable.loading_animation)
+                error(R.drawable.broken_image_ic)
+            }
         }
         binding.downloadButton.setOnClickListener {
             downloadImage()

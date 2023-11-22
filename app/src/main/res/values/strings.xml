@@ -15,6 +15,6 @@
     <string name="comments_text">%1d comments</string>
     <string name="see_previous_content_desc">see previous publications button</string>
     <string name="see_next_content_desc">see next publications</string>
-    <string name="previous_10">previous 10 publications</string>
-    <string name="next_10">next 10 publications</string>
+    <string name="previous_page">previous page</string>
+    <string name="next_page">next page</string>
 </resources>
