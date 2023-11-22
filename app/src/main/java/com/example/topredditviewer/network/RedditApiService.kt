@@ -9,7 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 private const val BASE_URL = "https://www.reddit.com/"
-private const val LIMIT = 10
+internal const val LIMIT = 10
 private const val RAW_JSON = 1
 
 private val moshi = Moshi.Builder()

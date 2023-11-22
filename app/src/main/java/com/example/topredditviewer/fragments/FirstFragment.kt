@@ -50,10 +50,10 @@ class FirstFragment : Fragment() {
             binding.nextPublicationTextView.setVisibility(it)
         }
         binding.previousPublicationTextView.setOnClickListener {
-            viewModel.getPublications(useBeforeParameter = true)
+            viewModel.getPublications(showPreviousPage = true)
         }
         binding.nextPublicationTextView.setOnClickListener {
-            viewModel.getPublications(useAfterParameter = true)
+            viewModel.getPublications(showNextPage = true)
         }
     }
 

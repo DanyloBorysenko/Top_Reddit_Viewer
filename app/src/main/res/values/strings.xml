@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Top Reddit Viewer</string>
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="download_button_text">download</string>
@@ -12,9 +10,11 @@
     <string name="minute_ago">a minute ago</string>
     <string name="hour_ago">hour ago</string>
     <string name="yesterday_text">yesterday</string>
+    <string name="author_text">author : %1s</string>
     <string name="comments_text">%1d comments</string>
     <string name="see_previous_content_desc">see previous publications button</string>
     <string name="see_next_content_desc">see next publications</string>
     <string name="previous_page">previous page</string>
     <string name="next_page">next page</string>
+    <string name="image_details">Image details</string>
 </resources>

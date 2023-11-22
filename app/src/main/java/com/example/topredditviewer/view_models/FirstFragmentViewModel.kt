@@ -6,10 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.topredditviewer.model.Publication
+import com.example.topredditviewer.model.RedditData
+import com.example.topredditviewer.network.LIMIT
 import com.example.topredditviewer.network.RedditApi
 import kotlinx.coroutines.launch
 
-private const val TAG = "FirstFragmentViewModel"
 class FirstFragmentViewModel : ViewModel() {
     private val _after = MutableLiveData<String?>()
     val after : LiveData<String?>
@@ -20,23 +21,27 @@ class FirstFragmentViewModel : ViewModel() {
     private val _publications = MutableLiveData<List<Publication>>()
     val publications : LiveData<List<Publication>>
         get() = _publications
+    private var fetchedPublicationCount : Int = 0
 
     init {
         getPublications()
     }
-    fun getPublications(useAfterParameter : Boolean = false, useBeforeParameter : Boolean = false) {
+    fun getPublications(showNextPage : Boolean = false, showPreviousPage : Boolean = false) {
         viewModelScope.launch {
+            val redditData : RedditData?
             val topPublications = mutableListOf<Publication>()
             var afterParamFromResponse : String? = null
             var beforeParamFromResponse : String? = null
             try {
-
-                val redditData = if (useAfterParameter) {
-                    RedditApi.retrofitService.loadTopPublication(after = _after.value, count = 10)
-                } else if (useBeforeParameter) {
-                    RedditApi.retrofitService.loadTopPublication(before = _before.value, count = 10)
+                if (showNextPage) {
+                    fetchedPublicationCount += LIMIT
+                    redditData = RedditApi.retrofitService.loadTopPublication(after = _after.value, count = fetchedPublicationCount)
+                } else if (showPreviousPage) {
+                    fetchedPublicationCount -= LIMIT
+                    redditData = RedditApi.retrofitService.loadTopPublication(before = _before.value, count = fetchedPublicationCount)
                 } else {
-                    RedditApi.retrofitService.loadTopPublication()
+                    redditData = RedditApi.retrofitService.loadTopPublication()
+                    fetchedPublicationCount += LIMIT
                 }
                 redditData.data.children.forEach{
                     topPublications.add(it.data)
@@ -44,7 +49,6 @@ class FirstFragmentViewModel : ViewModel() {
                 afterParamFromResponse = redditData.data.after
                 beforeParamFromResponse = redditData.data.before
             } catch (e : Exception) {
-                Log.d(TAG, "After parameter is ${after.value}, Before parameter is ${before.value}")
                 e.printStackTrace()
             }
             _publications.value = topPublications
@@ -52,33 +56,4 @@ class FirstFragmentViewModel : ViewModel() {
             _after.value = afterParamFromResponse
         }
     }
-
-//    fun getPublications(useAfterParameter : Boolean = false, useBeforeParameter : Boolean = false) {
-//        viewModelScope.launch {
-//            val topPublications = mutableListOf<Publication>()
-//            var afterParamFromResponse : String? = null
-//            var beforeParamFromResponse : String? = null
-//            try {
-//
-//                val redditData = if (useAfterParameter) {
-//                    RedditApi.retrofitService.loadTopPublication(after = _after.value, count = 10)
-//                } else if (useBeforeParameter) {
-//                    RedditApi.retrofitService.loadTopPublication(before = _before.value, count = 10)
-//                } else {
-//                    RedditApi.retrofitService.loadTopPublication()
-//                }
-//                redditData.data.children.forEach{
-//                    topPublications.add(it.data)
-//                }
-//                afterParamFromResponse = redditData.data.after
-//                beforeParamFromResponse = redditData.data.before
-//            } catch (e : Exception) {
-//                Log.d(TAG, "After parameter is ${after.value}, Before parameter is ${before.value}")
-//                e.printStackTrace()
-//            }
-//            _publications.value = topPublications
-//            _before.value = beforeParamFromResponse
-//            _after.value = afterParamFromResponse
-//        }
-//    }
 }

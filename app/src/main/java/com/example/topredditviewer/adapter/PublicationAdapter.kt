@@ -44,7 +44,7 @@ class PublicationAdapter(
                 placeholder(R.drawable.loading_animation)
                 error(R.drawable.broken_image_ic)
             }
-            binding.publicationAuthorTextView.text = publication.author
+            binding.publicationAuthorTextView.text = itemView.context.getString(R.string.author_text, publication.author)
             binding.publicationCommentsCountTextView.text = itemView.context.getString(R.string.comments_text, publication.numComments)
             binding.publicationTimeCreatedTextView.text = getDateInTimeAgoFormat(publication.created)
             binding.publicationImageView.setOnClickListener {
