@@ -1,6 +1,5 @@
 package com.example.topredditviewer.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,10 +7,10 @@ import coil.load
 import com.example.topredditviewer.R
 import com.example.topredditviewer.databinding.PublicationCardBinding
 import com.example.topredditviewer.model.Publication
+import com.example.topredditviewer.model.ThumbnailTypes
 import java.util.concurrent.TimeUnit
 
-private const val THUMBNAIL_VALUE = "default"
-
+private const val FIRST_PREVIEW_IMAGE_INDEX = 0
 class PublicationAdapter(
     private val onClick : (publication: Publication) -> Unit
 ) : RecyclerView.Adapter<PublicationAdapter.CustomViewHolder>() {
@@ -74,10 +73,12 @@ class PublicationAdapter(
             return formattedDate
         }
         private fun getImageUrl(publication: Publication) : String {
-            val imageUrl = if (publication.thumbnail == THUMBNAIL_VALUE) {
-                publication.preview?.images?.get(0)?.source?.url
-            } else {
-                publication.thumbnail
+            val imageUrl = when(publication.thumbnail) {
+                ThumbnailTypes.DEFAULT.value -> {publication.preview?.images?.get(
+                    FIRST_PREVIEW_IMAGE_INDEX)?.source?.url}
+                ThumbnailTypes.NSFW.value -> {publication.preview?.images?.get(
+                    FIRST_PREVIEW_IMAGE_INDEX)?.source?.url}
+                else -> {publication.thumbnail}
             }
             return imageUrl.orEmpty()
         }

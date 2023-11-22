@@ -23,3 +23,7 @@ data class MediaImage(val y: Int, val x: Int, val u: String)
 data class Preview(val images: List<Image>?)
 data class Image(val source : Source)
 data class Source(val url: String)
+
+enum class ThumbnailTypes(val value : String) {
+    DEFAULT("default"), NSFW("nsfw")
+}

@@ -8,9 +8,9 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val BASE_URL = "https://www.reddit.com/"
-internal const val LIMIT = 10
+internal const val LIMIT = 30
 private const val RAW_JSON = 1
+private const val BASE_URL = "https://www.reddit.com/"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
