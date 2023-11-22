@@ -10,6 +10,10 @@ import com.example.topredditviewer.network.LIMIT
 import com.example.topredditviewer.network.RedditApi
 import kotlinx.coroutines.launch
 
+enum class AppStatus {
+    LOADING, DONE, ERROR
+}
+
 class FirstFragmentViewModel : ViewModel() {
     private val _after = MutableLiveData<String?>()
     val after : LiveData<String?>
@@ -21,12 +25,16 @@ class FirstFragmentViewModel : ViewModel() {
     val publications : LiveData<List<Publication>>
         get() = _publications
     private var fetchedPublicationCount : Int = 0
+    private val _status  = MutableLiveData<AppStatus>()
+    val status : LiveData<AppStatus>
+        get() = _status
 
     init {
         getPublications()
     }
     fun getPublications(showNextPage : Boolean = false, showPreviousPage : Boolean = false) {
         viewModelScope.launch {
+            _status.value = AppStatus.LOADING
             val redditData : RedditData?
             val topPublications = mutableListOf<Publication>()
             var afterParamFromResponse : String? = null
@@ -47,12 +55,14 @@ class FirstFragmentViewModel : ViewModel() {
                 }
                 afterParamFromResponse = redditData.data.after
                 beforeParamFromResponse = redditData.data.before
+                _publications.value = topPublications
+                _before.value = beforeParamFromResponse
+                _after.value = afterParamFromResponse
+                _status.value = AppStatus.DONE
             } catch (e : Exception) {
+                _status.value = AppStatus.ERROR
                 e.printStackTrace()
             }
-            _publications.value = topPublications
-            _before.value = beforeParamFromResponse
-            _after.value = afterParamFromResponse
         }
     }
 }

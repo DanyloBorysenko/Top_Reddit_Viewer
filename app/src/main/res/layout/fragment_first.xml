@@ -1,49 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/small"
-    tools:context="fragments.FirstFragment">
-
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/loading_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/previous_publication_text_view"
-            android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/small"
+        tools:context="fragments.FirstFragment">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/previous_page"
-            tools:text="@string/previous"
-            android:textAlignment="textStart"
-            android:visibility="invisible"
-            android:contentDescription="@string/see_previous_content_desc"/>
-        <View
-            android:layout_width="0dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/previous_publication_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/previous_page"
+                tools:text="@string/previous"
+                android:textAlignment="textStart"
+                android:visibility="invisible"
+                android:contentDescription="@string/see_previous_content_desc"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/next_publication_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:text="@string/next_page"
+                tools:text="@string/next"
+                android:visibility="invisible"
+                android:contentDescription="@string/see_next_content_desc"/>
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/publications_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/fab_margin"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
-        <TextView
-            android:id="@+id/next_publication_text_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textAlignment="textEnd"
-            android:text="@string/next_page"
-            tools:text="@string/next"
-            android:visibility="invisible"
-            android:contentDescription="@string/see_next_content_desc"/>
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     </LinearLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/publications_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-</LinearLayout>
+</FrameLayout>
+
