@@ -3,7 +3,7 @@ package com.example.topredditviewer.model
 import com.squareup.moshi.Json
 
 data class RedditData(val data : DataField)
-data class DataField(val children : List<Children>)
+data class DataField(val children : List<Children>, val after : String?, val before : String?)
 data class Children(val data: Publication)
 data class Publication(
     val title : String,
@@ -14,7 +14,8 @@ data class Publication(
     val author : String?,
     val thumbnail : String?,
     val preview : Preview?,
-    val created : Long?)
+    val created : Long?,
+    val url : String?)
 data class GalleryData(val items : List<GalleryItem>)
 data class GalleryItem(@Json(name = "media_id") val mediaId : String)
 data class MediaItem(val id : String, val s : MediaImage)

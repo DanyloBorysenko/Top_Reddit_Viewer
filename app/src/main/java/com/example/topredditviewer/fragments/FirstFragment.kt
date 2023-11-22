@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.topredditviewer.R
 import com.example.topredditviewer.adapter.PublicationAdapter
 import com.example.topredditviewer.databinding.FragmentFirstBinding
@@ -40,7 +39,18 @@ class FirstFragment : Fragment() {
                 navigateToSecondFragment(publication)
             }
         }
-        binding.publicationsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        viewModel.before.observe(viewLifecycleOwner) {
+            binding.previousPublicationTextView.setVisibility(it)
+        }
+        viewModel.after.observe(viewLifecycleOwner) {
+            binding.nextPublicationTextView.setVisibility(it)
+        }
+        binding.previousPublicationTextView.setOnClickListener {
+            viewModel.getPublications(useBeforeParameter = true)
+        }
+        binding.nextPublicationTextView.setOnClickListener {
+            viewModel.getPublications(useAfterParameter = true)
+        }
     }
 
     override fun onDestroyView() {
@@ -53,5 +63,13 @@ class FirstFragment : Fragment() {
             setImageUrl()
         }
         findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+    }
+
+    private fun View.setVisibility(parameter : String?) {
+        if (parameter == null) {
+            this.visibility = View.GONE
+        } else {
+            this.visibility = View.VISIBLE
+        }
     }
 }

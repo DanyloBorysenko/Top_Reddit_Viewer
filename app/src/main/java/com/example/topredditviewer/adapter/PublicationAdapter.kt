@@ -1,8 +1,8 @@
 package com.example.topredditviewer.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.topredditviewer.R
@@ -10,16 +10,17 @@ import com.example.topredditviewer.databinding.PublicationCardBinding
 import com.example.topredditviewer.model.Publication
 import java.util.concurrent.TimeUnit
 
+private const val THUMBNAIL_VALUE = "default"
+
 class PublicationAdapter(private val publications : List<Publication>, private val onClick : (publication: Publication) -> Unit) : RecyclerView.Adapter<PublicationAdapter.CustomViewHolder>() {
 
     inner class CustomViewHolder(private val binding: PublicationCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(publication: Publication) {
             binding.publicationTitleTextView.text = publication.title
-            val imgUri = publication.thumbnail?.toUri()?.buildUpon()?.scheme("https")?.build()
-            binding.publicationImageView.load(imgUri) {
+            binding.publicationImageView.load(getImageUrl(publication)) {
             }
             binding.publicationAuthorTextView.text = publication.author
-            binding.publicationCommentsCountTextView.text = publication.numComments.toString()
+            binding.publicationCommentsCountTextView.text = itemView.context.getString(R.string.comments_text, publication.numComments)
             binding.publicationTimeCreatedTextView.text = getDateInTimeAgoFormat(publication.created)
             binding.publicationImageView.setOnClickListener {
                 onClick.invoke(publication)
@@ -46,6 +47,14 @@ class PublicationAdapter(private val publications : List<Publication>, private v
                 else -> {context.getString(R.string.days, days)}
             }
             return formattedDate
+        }
+        private fun getImageUrl(publication: Publication) : String {
+            val imageUrl = if (publication.thumbnail == THUMBNAIL_VALUE) {
+                publication.preview?.images?.get(0)?.source?.url
+            } else {
+                publication.thumbnail
+            }
+            return imageUrl.orEmpty()
         }
     }
 
