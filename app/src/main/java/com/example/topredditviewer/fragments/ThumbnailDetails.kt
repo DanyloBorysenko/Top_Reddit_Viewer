@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import coil.load
 import com.example.topredditviewer.R
-import com.example.topredditviewer.databinding.FragmentSecondBinding
+import com.example.topredditviewer.databinding.DetailsThumbnailBinding
 import com.example.topredditviewer.view_models.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,16 +20,16 @@ import kotlinx.coroutines.withContext
 import java.io.OutputStream
 import java.net.URL
 
-class SecondFragment : Fragment() {
+class ThumbnailDetails : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private var _binding: FragmentSecondBinding? = null
+    private var _binding: DetailsThumbnailBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        _binding = DetailsThumbnailBinding.inflate(inflater, container, false)
         return binding.root
 
     }

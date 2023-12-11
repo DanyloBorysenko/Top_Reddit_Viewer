@@ -14,7 +14,7 @@ enum class AppStatus {
     LOADING, DONE, ERROR
 }
 
-class FirstFragmentViewModel : ViewModel() {
+class TopPublicationsViewModel : ViewModel() {
     private val _after = MutableLiveData<String?>()
     val after: LiveData<String?>
         get() = _after
@@ -32,6 +32,16 @@ class FirstFragmentViewModel : ViewModel() {
     init {
         getPublications()
     }
+    private fun updateParameters(redditData: RedditData, topPublications: MutableList<Publication>) {
+        _after.value = redditData.data.after
+        _before.value = redditData.data.before
+        _publications.value = topPublications
+        _status.value = AppStatus.DONE
+    }
+    private suspend fun initialLoading(): RedditData {
+        fetchedPublicationCount += LIMIT
+        return RedditApi.retrofitApi.loadTopPublication()
+    }
 
     fun getPublications(showNextPage: Boolean = false, showPreviousPage: Boolean = false) {
         viewModelScope.launch {
@@ -41,27 +51,23 @@ class FirstFragmentViewModel : ViewModel() {
             try {
                 if (showNextPage) {
                     fetchedPublicationCount += LIMIT
-                    redditData = RedditApi.retrofitService.loadTopPublication(
+                    redditData = RedditApi.retrofitApi.loadTopPublication(
                         after = _after.value,
                         count = fetchedPublicationCount
                     )
                 } else if (showPreviousPage) {
                     fetchedPublicationCount -= LIMIT
-                    redditData = RedditApi.retrofitService.loadTopPublication(
+                    redditData = RedditApi.retrofitApi.loadTopPublication(
                         before = _before.value,
                         count = fetchedPublicationCount
                     )
                 } else {
-                    redditData = RedditApi.retrofitService.loadTopPublication()
-                    fetchedPublicationCount += LIMIT
+                    redditData = initialLoading()
                 }
                 redditData.data.children.forEach {
                     topPublications.add(it.data)
                 }
-                _after.value = redditData.data.after
-                _before.value = redditData.data.before
-                _publications.value = topPublications
-                _status.value = AppStatus.DONE
+                updateParameters(redditData, topPublications)
             } catch (e: Exception) {
                 _status.value = AppStatus.ERROR
                 e.printStackTrace()

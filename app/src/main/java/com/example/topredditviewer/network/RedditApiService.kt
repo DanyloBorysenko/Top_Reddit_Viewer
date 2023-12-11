@@ -32,7 +32,7 @@ interface RedditApiService {
 }
 
 object RedditApi {
-    val retrofitService: RedditApiService by lazy {
+    val retrofitApi: RedditApiService by lazy {
         retrofit.create(RedditApiService::class.java)
     }
 }

@@ -1,7 +1,6 @@
 package com.example.topredditviewer.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,22 +11,22 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.topredditviewer.R
 import com.example.topredditviewer.adapter.PublicationAdapter
-import com.example.topredditviewer.databinding.FragmentFirstBinding
+import com.example.topredditviewer.databinding.PublicationsTopBinding
 import com.example.topredditviewer.model.Publication
 import com.example.topredditviewer.view_models.AppStatus
-import com.example.topredditviewer.view_models.FirstFragmentViewModel
+import com.example.topredditviewer.view_models.TopPublicationsViewModel
 import com.example.topredditviewer.view_models.SharedViewModel
 
-class FirstFragment : Fragment() {
+class TopPublications : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private val viewModel: FirstFragmentViewModel by viewModels()
+    private val viewModel: TopPublicationsViewModel by viewModels()
     private val adapter: PublicationAdapter by lazy {
         PublicationAdapter { publication ->
             navigateToSecondFragmentAndSetPublication(publication)
         }
     }
 
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: PublicationsTopBinding? = null
 
     private val binding get() = _binding!!
 
@@ -35,7 +34,7 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = PublicationsTopBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -52,26 +51,10 @@ class FirstFragment : Fragment() {
                 }
             }
         )
-        viewModel.status.observe(viewLifecycleOwner) { status ->
-            setLoadingImage(status)
-        }
+        setupObservers()
         binding.publicationsRecyclerView.adapter = adapter
         binding.publicationsRecyclerView.setHasFixedSize(true)
-        viewModel.publications.observe(viewLifecycleOwner) { publications ->
-            adapter.updateData(newData = publications)
-        }
-        viewModel.before.observe(viewLifecycleOwner) {
-            binding.previousPublicationTextView.setVisibility(it)
-        }
-        viewModel.after.observe(viewLifecycleOwner) {
-            binding.nextPublicationTextView.setVisibility(it)
-        }
-        binding.previousPublicationTextView.setOnClickListener {
-            viewModel.getPublications(showPreviousPage = true)
-        }
-        binding.nextPublicationTextView.setOnClickListener {
-            viewModel.getPublications(showNextPage = true)
-        }
+        setupClickListeners()
     }
 
     override fun onDestroyView() {
@@ -79,12 +62,39 @@ class FirstFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupObservers() {
+        viewModel.apply {
+            status.observe(viewLifecycleOwner) { status ->
+                setLoadingImage(status)
+            }
+            publications.observe(viewLifecycleOwner) { publications ->
+                adapter.updateData(newData = publications)
+            }
+            before.observe(viewLifecycleOwner) {
+                binding.previousPublicationTextView.setVisibility(it)
+            }
+            after.observe(viewLifecycleOwner) {
+                binding.nextPublicationTextView.setVisibility(it)
+            }
+        }
+    }
+    private fun setupClickListeners() {
+        binding.apply {
+            previousPublicationTextView.setOnClickListener {
+                viewModel.getPublications(showPreviousPage = true)
+            }
+            nextPublicationTextView.setOnClickListener {
+                viewModel.getPublications(showNextPage = true)
+            }
+        }
+    }
+
     private fun navigateToSecondFragmentAndSetPublication(publication: Publication) {
         sharedViewModel.apply {
             saveSelectedPublication(publication)
             setImageUrl()
         }
-        findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        findNavController().navigate(R.id.action_TopPublicationsFragment_to_ThumbnailDetailsFragment)
     }
 
     private fun View.setVisibility(parameter: String?) {
@@ -98,16 +108,18 @@ class FirstFragment : Fragment() {
     private fun setLoadingImage(status: AppStatus) {
         when (status) {
             AppStatus.LOADING -> {
-                binding.loadingImageView.visibility = View.VISIBLE
-                binding.loadingImageView.bringToFront()
-                binding.loadingImageView.setImageResource(R.drawable.loading_animation)
+                binding.apply {
+                    loadingImageView.visibility = View.VISIBLE
+                    loadingImageView.bringToFront()
+                    loadingImageView.setImageResource(R.drawable.loading_animation)
+                }
             }
 
             AppStatus.ERROR -> {
                 binding.loadingImageView.visibility = View.VISIBLE
-                binding.loadingImageView.setImageResource(R.drawable.broken_image_ic)
+                binding.appStatus.visibility = View.VISIBLE
+                binding.loadingImageView.setImageResource(R.drawable.connection_error_ic)
             }
-
             else -> binding.loadingImageView.visibility = View.GONE
         }
     }

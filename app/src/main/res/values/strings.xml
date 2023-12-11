@@ -17,4 +17,5 @@
     <string name="previous_page"><u>previous page</u></string>
     <string name="next_page"><u>next page</u></string>
     <string name="image_details">Image details</string>
+    <string name="connection_error_text">Connection error</string>
 </resources>
